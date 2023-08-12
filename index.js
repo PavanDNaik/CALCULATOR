@@ -1,9 +1,8 @@
-var op1='',op2='',res="",opcode="";
-var active = true;
+var op1='',op2='',opcode="";
+var active = true,clearFlag = false;
 const results = document.getElementById("display");
 const reader = document.getElementById("operator");
 const buttons = document.querySelectorAll("button");
-
 for(let i = 0;i< buttons.length;i++){
     buttons[i].addEventListener("click",()=>{
         operate(buttons[i].value); 
@@ -11,87 +10,81 @@ for(let i = 0;i< buttons.length;i++){
 }
 
 function operate(input){
-    
-    if(input == 'cl')
-    {
-        let str = reader.value;
-        if(str.length == 0)return;
-        reader.value = str.substring(0,str.length-1);
-    }
-    else if(input == 'del')
-    {
-        let str = reader.value;
-        if(str.length == 0)return;
-        reader.value = '';
-        op1='';
-        op2='';
-        opcode = "";
-        active = true;
-        res = '';
-        results.innerHTML = "";
-    }
-    else if(input == '+' || input == '-' || input == '*' || input == '/')
-    {   
-        
-        if(active)
-        {
-         opcode = input;
-         op1 = reader.value;
-         active = false;
-        }
-        else{
-            if(op2 != '')
-              calculate(op1,op2,opcode);
-              op2="";
-              op1 = res;
-              opcode = input;
-        }
-    }
-    else if(input == "=" && op1 != '' && op2 !=''){
-        calculate(op1,op2,opcode);
-        reader.value = res;
-    }
-    else{
-        let offset = '';
 
-        if(input == '.'){
-            offset="0";
+    switch(input){
+        case 'del':{
+            if(reader.value == "")return;
+            reader.value = reader.value.slice(0,reader.value.length-1);
+            break;
         }
-        if(active){
-            
-            reader.value += input + offset;
-            op1 += input + offset;
+        case 'ac':{
+            op1="";
+            op2="";
+            res="";
+            opcode="";
+            active = true;
+            reader.value = "";
+            results.textContent = "";
         }
-        else{
-            if(res == '')
-                results.textContent = op1 + opcode ;
-            else 
-                results.textContent = res + opcode ;
-                console.log(op2);
-            op2 += input + offset; 
-            
-            reader.value = op2;
+        case '+':
+        case '-':
+        case '*':
+        case '/':{
+            if(reader.value =="")return;            
+            if( active ){
+                opcode = input;
+                op1 = reader.value;
+                results.textContent = op1 + input;
+                reader.value = "";
+                active = false;
+                return;
+            }
+            else if(op2 =="" && reader.value != ""){
+                op2 = reader.value;
+                op1 = calculate(op1,op2,opcode);
+                reader.value = op1;
+                results.textContent +=  op2 + input;
+                clearFlag = true;
+                op2 = "";
+                opcode = input;
+            }
+            else {
+                opcode = input;
+                results.textContent =  results.textContent.slice(0,results.textContent.length -1);
+                results.textContent += opcode;
+            }
+            break;
         }
+        case "=":
+            {
+                if(op1 == "" )return;
+                if(op2 == ''){
+                    op2 = reader.value;
+                }
+                op1 = calculate(op1,op2,opcode);
+                results.textContent += op2;
+                active = true;
+                reader.value = op1;
+                op1 = "";
+                op2 = "";
+                break;
+            }
+        default:
+        if (clearFlag){
+            reader.value ="";
+            clearFlag = false;
+        }
+        reader.value += input;
     }
+
 }
 
-function calculate(op1,op2,input){
-    switch(input)
-    {
-        case '+':res = Number(op1) + Number(op2);
-                break;
-        case '-':res = op1 - op2;
-                break;
-        case '*':res = op1 * op2;
-                break;
-        case '/':res = op1 / op2;
-                break;
+function calculate(op1,op2,opcode)
+{
+    switch (opcode){
+        case '+':return (Number(op1) + Number(op2));
+        case '-':return (op1 - op2);
+        case '*':return (op1 * op2);
+        case '/':return (op1 / op2);
     }
-    op1 = res;
-    op2 = '';
-    console.log(op2);
-    active = false;
-    results.textContent = res;
-    if(res != "")
-    reader.value =res;
 }
