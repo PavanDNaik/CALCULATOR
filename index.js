@@ -24,7 +24,7 @@ function operate(input){
             opcode="";
             active = true;
             reader.value = "";
-            results.textContent = "";
+            results.innerHTML = "";
         }
         case '+':
         case '-':
@@ -42,6 +42,9 @@ function operate(input){
             else if(op2 =="" && reader.value != ""){
                 op2 = reader.value;
                 op1 = calculate(op1,op2,opcode);
+                if(op1 == 'e'){
+                    operate('ac');
+                }
                 reader.value = op1;
                 results.textContent +=  op2 + input;
                 clearFlag = true;
@@ -62,6 +65,9 @@ function operate(input){
                     op2 = reader.value;
                 }
                 op1 = calculate(op1,op2,opcode);
+                if(op1 == 'e'){
+                    operate('ac');
+                }
                 results.textContent += op2;
                 active = true;
                 reader.value = op1;
@@ -85,6 +91,12 @@ function calculate(op1,op2,opcode)
         case '+':return (Number(op1) + Number(op2));
         case '-':return (op1 - op2);
         case '*':return (op1 * op2);
-        case '/':return (op1 / op2);
+        case '/':{
+            if(op2 == 0){
+                alert("divide by zero error !!!");
+                return 'e';
+            }
+            return (op1 / op2);
+        }
     }
 }
