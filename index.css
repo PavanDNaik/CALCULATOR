@@ -7,6 +7,17 @@ body {
     background-color: black;
 }
 
+.calc {
+    border: 1px solid white;
+    background-color:black;
+    border-radius: 12px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
+    height: auto;
+}
 
 div.input {
     padding: 0px;
@@ -18,26 +29,31 @@ div.input {
 
 .text-field {
     width: 430px;
+    /* height: auto; */
     display: flex;
     flex-direction: column;
     text-align: right;
+    gap: 10px;
     border-bottom: 1px solid white;
     margin: 25px;
     margin-bottom: 0px;
 }
 
 #display {
-    height: 100px;
-    font-size: 40px;
+    min-height: 100px;
+    height: auto;
+    font-size: 30px;
     background-color: black;
     color: white;
+    word-wrap: break-word;
 }
 
 #operator {
-    height: 100px;
+    min-height: 100px;
     background-color: black;
     color: white;
     font-size: 50px;
+    word-wrap: break-word;
 }
 
 
@@ -45,7 +61,7 @@ table {
     height: 400px;
     width: 400px;
     padding-top: 0px;
-    
+    margin: auto;
 }
 
  td {
@@ -75,6 +91,7 @@ button.equal{
     border-radius: 50%;
     height: 65px;
     width: 65px;
+    margin-left: 20%;
 }
 
 
@@ -98,11 +115,7 @@ button.op{
 button:active,
 #clear:active,
 #delete:active{
-    background-color: rgb(40, 38, 38);
+    background-color: rgb(70, 66, 66);
 }
 
-.calc {
-    border: 1px solid white;
-    background-color:black;
-    border-radius: 12px;
-}
+
