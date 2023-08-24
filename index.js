@@ -1,46 +1,53 @@
 var op1='',op2='',opcode="";
 var active = true,clearFlag = false ;
+
 const results = document.getElementById("display");
 const reader = document.getElementById("operator");
 const buttons = document.querySelectorAll("button");
-for(let i = 0;i< buttons.length;i++){
-    buttons[i].addEventListener("click",()=>{
-        operate(buttons[i].value); 
+
+buttons.forEach((b)=>{
+    b.addEventListener("click",()=>{
+        operate(b.value); 
     });
-}
+});
 
 function operate(input){
 
     switch(input){
+
         case 'del':{
             if(reader.textContent == "")return;
             reader.textContent = reader.textContent.slice(0,reader.textContent.length-1);
             break;
         }
+
         case 'ac':{
             op1="";
             op2="";
             res="";
             opcode="";
             active = true;
+            clearFlag = false
             reader.textContent = "";
-            results.innerHTML = "";
+            results.textContent = "";
+            break;
         }
+
         case '+':
         case '-':
         case '*':
         case '/':{
-            if(reader.textContent ==""){
-                if(input == '-'){
-                    reader.textContent+="-0";
-                }
+            if(reader.textContent =="" && input == '-'){
+                reader.textContent+="-0";
                 return;        
             }    
             if( active ){   // active flag represent which operand should be read.
                 opcode = input;
                 op1 = reader.textContent;
-                if(op1 < 0) results.textContent = '('+op1+')' + " " + input;
+
+                if(op1 < 0 || op1 == '-0') results.textContent = '('+op1+')' + " " + input;
                 else results.textContent = op1 + " " + input;
+
                 reader.textContent = "";
                 active = false;
                 return;
@@ -61,9 +68,10 @@ function operate(input){
 
                 reader.textContent = op1;
 
-                if(op2<0)  results.textContent += " ("+ op2 + ") " + input;
+                if(op2<0 || op2 == '-0')  results.textContent += " ("+ op2 + ") " + input;
                 else results.textContent += " "+ op2 + " " + input;
-                clearFlag = true;   //clearFlag used to clear reader when we start reading 
+
+                clearFlag = true;   //clearFlag used to clear reader 
                 op2 = "";
                 opcode = input;
             }
@@ -74,27 +82,33 @@ function operate(input){
             }
             break;
         }
+
         case "=":
             {
                 if(op1 == "" )return;
+
                 if(op2 == ''){
                     op2 = reader.textContent;
                 }
+
                 op1 = calculate(op1,op2,opcode);
                 if(op1 == 'e'){
                     operate('ac');
                     return;
                 }
-                if(op2 < 0)  results.textContent += " ("+op2+')';
+
+                if(op2 < 0 || op2 == '-0')  results.textContent += " ("+op2+')';
                 else results.textContent += " "+op2;
+
                 active = true;
+                clearFlag = true;
                 reader.textContent = op1;
                 op1 = "";
                 op2 = "";
-                clearFlag = true;
                 break;
             }
-        default:
+
+        default:{
             if(input == '.' && reader.textContent.includes('.'))return;
             
             if (clearFlag){
@@ -106,6 +120,7 @@ function operate(input){
                 reader.textContent = '-';
             }
             reader.textContent += input;
+        }
     }
 
 }
